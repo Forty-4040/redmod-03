@@ -294,11 +294,11 @@ public class RedButtonEntity extends PathAwareEntity implements GeoEntity {
 	}
 
 	private static float healAmount(ItemStack stack) {
-		if (stack.isOf(Items.COOKED_BEEF)) {
-			return STEAK_HEAL;
+		if (stack.isOf(Items.APPLE)) {
+			return APPLE_HEAL;
 		}
-		if (stack.isOf(Items.CARROT)) {
-			return CARROT_HEAL;
+		if (stack.isOf(Items.MELON_SLICE)) {
+			return MELON_SLICE_HEAL;
 		}
 		return 0.0f;
 	}
