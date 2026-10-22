@@ -38,37 +38,28 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
 
-/**
- * Красная кнопка: маленькое существо, которое прыгает как слайм.
- * Анимации берутся из red_button.animation.json (GeckoLib).
- */
 public class RedButtonEntity extends PathAwareEntity implements GeoEntity {
 
-	// ===== Настройки (можно менять) =====
-
-	/** Задержка между нажатиями в тиках: 3 тика = 0.15 секунды. */
 	public static final int PRESS_COOLDOWN_TICKS = 3;
-	/** Здоровье: 6 HP = 3 сердца. */
+
 	public static final double MAX_HEALTH = 6.0;
-	/** Сколько HP возвращает жареный стейк и морковка. */
+
 	public static final float STEAK_HEAL = 4.0f;
 	public static final float CARROT_HEAL = 2.0f;
 
-	/** Тики «приседания» перед прыжком (под анимацию hop: отрыв на ~0.2 сек). */
 	private static final int WINDUP_TICKS = 4;
-	/** Сила прыжка вверх (0.42 как у игрока) и вперёд. */
+
 	private static final double HOP_UP = 0.42;
 	private static final double HOP_FORWARD = 0.20;
 	private static final double HOP_FORWARD_FLEE = 0.27;
-	/** Примерная дальность одного прыжка в блоках (для проверки безопасной посадки). */
+
 	private static final double HOP_DISTANCE = 1.5;
-	/** Радиус, в котором кнопка замечает мобов (убегает) и игрока (ходит рядом). */
+
 	private static final double THREAT_RADIUS = 8.0;
 	private static final double PLAYER_RADIUS = 24.0;
-	/** Если игрок дальше этого расстояния, кнопка прыгает к нему. */
-	private static final double FOLLOW_DISTANCE = 4.0;
 
-	// ===== Анимации (названия из Blockbench) =====
+	private static final double FOLLOW_DISTANCE = 5.0;
+
 	private static final RawAnimation ANIM_IDLE = RawAnimation.begin().thenLoop("animation.red_button.idle");
 	private static final RawAnimation ANIM_SUNK = RawAnimation.begin().thenPlayAndHold("animation.red_button.sunk");
 	private static final RawAnimation ANIM_HOP = RawAnimation.begin().thenPlay("animation.red_button.hop");
@@ -85,8 +76,8 @@ public class RedButtonEntity extends PathAwareEntity implements GeoEntity {
 
 	public RedButtonEntity(EntityType<? extends PathAwareEntity> type, World world) {
 		super(type, world);
-		this.setPersistent(); // не исчезает, когда игрок далеко
-		this.setEquipmentDropChance(EquipmentSlot.HEAD, 1.0f); // шлем всегда выпадает при смерти
+		this.setPersistent();
+		this.setEquipmentDropChance(EquipmentSlot.HEAD, 1.0f);
 	}
 
 	public static DefaultAttributeContainer.Builder createRedButtonAttributes() {
@@ -95,13 +86,10 @@ public class RedButtonEntity extends PathAwareEntity implements GeoEntity {
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25);
 	}
 
-	// ===== Поведение: прыжки =====
-
 	@Override
 	protected void mobTick() {
 		super.mobTick();
 
-		// Вода: кнопка не плавает, тонет без движений.
 		if (this.isTouchingWater()) {
 			this.windupTicks = -1;
 			Vec3d velocity = this.getVelocity();
@@ -109,12 +97,10 @@ public class RedButtonEntity extends PathAwareEntity implements GeoEntity {
 			return;
 		}
 
-		// В воздухе ничего не делаем, ждём приземления.
 		if (!this.isOnGround()) {
 			return;
 		}
 
-		// Приседание перед прыжком, потом прыжок.
 		if (this.windupTicks >= 0) {
 			if (this.windupTicks == 0) {
 				this.launch();
@@ -126,7 +112,6 @@ public class RedButtonEntity extends PathAwareEntity implements GeoEntity {
 			return;
 		}
 
-		// Пауза между прыжками.
 		if (this.restTicks > 0) {
 			this.restTicks--;
 			return;
@@ -156,12 +141,10 @@ public class RedButtonEntity extends PathAwareEntity implements GeoEntity {
 		this.setHeadYaw(yaw);
 	}
 
-	/** Выбирает направление прыжка или null, если прыгать не нужно. */
 	private Vec3d chooseDirection() {
 		this.pendingFlee = false;
 		Vec3d desired = null;
 
-		// 1. Убегаем от мобов-монстров.
 		List<MobEntity> threats = this.getWorld().getEntitiesByClass(
 				MobEntity.class,
 				this.getBoundingBox().expand(THREAT_RADIUS),
@@ -183,7 +166,6 @@ public class RedButtonEntity extends PathAwareEntity implements GeoEntity {
 			}
 		}
 
-		// 2. Иначе ходим вокруг игрока.
 		if (desired == null) {
 			PlayerEntity player = this.getWorld().getClosestPlayer(this, PLAYER_RADIUS);
 			if (player != null) {
@@ -204,7 +186,6 @@ public class RedButtonEntity extends PathAwareEntity implements GeoEntity {
 			return null;
 		}
 
-		// 3. Проверяем, что приземлимся в безопасном месте (не в воде, не с обрыва).
 		for (int i = 0; i < 8; i++) {
 			int step = (i + 1) / 2;
 			double angle = Math.toRadians(45.0 * step) * (i % 2 == 1 ? 1 : -1);
@@ -227,7 +208,6 @@ public class RedButtonEntity extends PathAwareEntity implements GeoEntity {
 		return new Vec3d(v.x * cos - v.z * sin, 0.0, v.x * sin + v.z * cos);
 	}
 
-	/** Кнопка сама в воду не прыгает: проверяем клетку приземления. */
 	private boolean isSafeLanding(Vec3d direction) {
 		World world = this.getWorld();
 		Vec3d landing = this.getPos().add(direction.multiply(HOP_DISTANCE));
@@ -238,24 +218,21 @@ public class RedButtonEntity extends PathAwareEntity implements GeoEntity {
 		for (int y = baseY + 1; y >= baseY - 3; y--) {
 			BlockPos ground = new BlockPos(x, y, z);
 			if (world.getBlockState(ground).getCollisionShape(world, ground).isEmpty()) {
-				continue; // воздух, вода и т.п.: идём ниже
+				continue;
 			}
 			BlockPos stand = ground.up();
 			boolean freeSpace = world.getBlockState(stand).getCollisionShape(world, stand).isEmpty();
 			boolean noFluid = world.getFluidState(stand).isEmpty();
 			return freeSpace && noFluid;
 		}
-		return false; // обрыв глубже 3 блоков
+		return false;
 	}
-
-	// ===== Взаимодействие =====
 
 	@Override
 	public ActionResult interactMob(PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getStackInHand(hand);
 		boolean client = this.getWorld().isClient;
 
-		// Shift + ПКМ: взять кнопку в руки.
 		if (player.isSneaking()) {
 			if (hand != Hand.MAIN_HAND) {
 				return ActionResult.PASS;
@@ -266,7 +243,6 @@ public class RedButtonEntity extends PathAwareEntity implements GeoEntity {
 			return ActionResult.success(client);
 		}
 
-		// ПКМ едой: лечение (жареный стейк, морковка).
 		float heal = healAmount(stack);
 		if (heal > 0.0f) {
 			if (this.getHealth() >= this.getMaxHealth()) {
@@ -286,7 +262,6 @@ public class RedButtonEntity extends PathAwareEntity implements GeoEntity {
 			return ActionResult.success(client);
 		}
 
-		// ПКМ шлемом: надеть шлем.
 		if (isHelmet(stack)) {
 			if (!client) {
 				ItemStack old = this.getEquippedStack(EquipmentSlot.HEAD);
@@ -304,7 +279,6 @@ public class RedButtonEntity extends PathAwareEntity implements GeoEntity {
 			return ActionResult.success(client);
 		}
 
-		// ПКМ пустой рукой: нажать.
 		if (stack.isEmpty() && hand == Hand.MAIN_HAND) {
 			if (!client) {
 				this.press();
@@ -344,7 +318,6 @@ public class RedButtonEntity extends PathAwareEntity implements GeoEntity {
 		NbtCompound nbt = item.getOrCreateNbt();
 		nbt.putFloat(RedButtonItem.HEALTH_KEY, this.getHealth());
 
-		// Шлем при взятии в руки спадает.
 		ItemStack helmet = this.getEquippedStack(EquipmentSlot.HEAD);
 		if (!helmet.isEmpty()) {
 			this.dropStack(helmet);
@@ -360,11 +333,9 @@ public class RedButtonEntity extends PathAwareEntity implements GeoEntity {
 		this.discard();
 	}
 
-	// ===== Урон =====
-
 	@Override
 	public boolean damage(DamageSource source, float amount) {
-		// Урона от падения нет.
+
 		if (source.isIn(DamageTypeTags.IS_FALL)) {
 			return false;
 		}
@@ -381,14 +352,11 @@ public class RedButtonEntity extends PathAwareEntity implements GeoEntity {
 		return SoundEvents.BLOCK_STONE_BUTTON_CLICK_OFF;
 	}
 
-	// ===== GeckoLib: анимации =====
-
 	@Override
 	public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-		// Основная анимация: стоит (idle) или тонет (sunk).
+
 		controllers.add(new AnimationController<>(this, "main", 3, this::mainPredicate));
 
-		// Разовые анимации, которые запускает сервер: прыжок, нажатие, еда.
 		controllers.add(new AnimationController<>(this, "action", 0, state -> PlayState.STOP)
 				.triggerableAnim("hop", ANIM_HOP)
 				.triggerableAnim("press", ANIM_PRESS)
