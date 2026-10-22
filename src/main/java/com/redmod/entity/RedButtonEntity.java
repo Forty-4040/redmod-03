@@ -42,10 +42,10 @@ public class RedButtonEntity extends PathAwareEntity implements GeoEntity {
 
 	public static final int PRESS_COOLDOWN_TICKS = 3;
 
-	public static final double MAX_HEALTH = 6.0;
+	public static final double MAX_HEALTH = 7.0;
 
-	public static final float STEAK_HEAL = 4.0f;
-	public static final float CARROT_HEAL = 2.0f;
+	public static final float APPLE_HEAL = 4.0f;
+	public static final float MELON_SLICE_HEAL = 2.0f;
 
 	private static final int WINDUP_TICKS = 4;
 
