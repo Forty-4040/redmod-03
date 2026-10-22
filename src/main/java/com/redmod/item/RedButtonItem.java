@@ -14,7 +14,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-/** Предмет «Красная кнопка»: ПКМ по блоку ставит существо. */
 public class RedButtonItem extends Item {
 	public static final String HEALTH_KEY = "RedButtonHealth";
 
@@ -43,7 +42,6 @@ public class RedButtonItem extends Item {
 			return ActionResult.FAIL;
 		}
 
-		// Здоровье сохраняется в предмете, когда кнопку берут в руки.
 		ItemStack stack = context.getStack();
 		NbtCompound nbt = stack.getNbt();
 		if (nbt != null && nbt.contains(HEALTH_KEY)) {
