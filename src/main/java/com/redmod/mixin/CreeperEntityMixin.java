@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/** Криперы убегают от красной кнопки, как от кошки. */
 @Mixin(CreeperEntity.class)
 public abstract class CreeperEntityMixin extends HostileEntity {
 
