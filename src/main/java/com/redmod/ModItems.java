@@ -16,7 +16,7 @@ public class ModItems {
 	);
 
 	public static void init() {
-		// Предмет появится во вкладке креатива «Функциональные блоки».
+		
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register(entries -> entries.add(RED_BUTTON_ITEM));
 	}
 }
