@@ -11,8 +11,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
 public class ModEntities {
-	// Размер хитбокса в блоках: ширина, высота. Модель очень маленькая,
-	// поэтому хитбокс чуть больше самой модели, чтобы в неё можно было попасть.
+
 	public static final float HITBOX_WIDTH = 0.4f;
 	public static final float HITBOX_HEIGHT = 0.3f;
 
