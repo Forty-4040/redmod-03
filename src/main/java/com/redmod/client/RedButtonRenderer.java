@@ -15,10 +15,8 @@ import software.bernie.geckolib.renderer.layer.BlockAndItemGeoLayer;
 
 public class RedButtonRenderer extends GeoEntityRenderer<RedButtonEntity> {
 
-	// ===== Положение шлема (можно подгонять) =====
-	/** Размер шлема: 1.0 = целый блок. */
 	private static final float HELMET_SCALE = 0.3f;
-	/** Сдвиг шлема в блоках относительно точки helmet из Blockbench. */
+
 	private static final float HELMET_OFFSET_X = 0.0f;
 	private static final float HELMET_OFFSET_Y = 0.05f;
 	private static final float HELMET_OFFSET_Z = 0.0f;
@@ -29,7 +27,6 @@ public class RedButtonRenderer extends GeoEntityRenderer<RedButtonEntity> {
 		this.addRenderLayer(new HelmetLayer(this));
 	}
 
-	/** Рисует надетый шлем в кости «helmet» модели. */
 	private static class HelmetLayer extends BlockAndItemGeoLayer<RedButtonEntity> {
 		HelmetLayer(GeoRenderer<RedButtonEntity> renderer) {
 			super(renderer);
