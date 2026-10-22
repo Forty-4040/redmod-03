@@ -6,7 +6,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 
 public class ModSounds {
-	// Звук нажатия: assets/redmod/sounds/red_button_press.ogg (описан в sounds.json)
+	
 	public static final SoundEvent RED_BUTTON_PRESS = register("red_button_press");
 
 	private static SoundEvent register(String name) {
@@ -15,6 +15,6 @@ public class ModSounds {
 	}
 
 	public static void init() {
-		// Вызов нужен, чтобы класс загрузился и звук зарегистрировался.
+		
 	}
 }
