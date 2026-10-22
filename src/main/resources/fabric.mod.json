@@ -3,7 +3,7 @@
 	"id": "redmod",
 	"version": "${version}",
 	"name": "RedMod",
-	"description": "Красная кнопка: маленькое прыгающее существо.",
+	"description": "The Red Button: a small culinary creature.",
 	"authors": [],
 	"license": "All-Rights-Reserved",
 	"environment": "*",
